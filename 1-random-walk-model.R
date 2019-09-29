@@ -9,16 +9,36 @@
 # sdrw is the variability in the drift rate (default value is 0.3)
 # criterion is the threshold for a response (default value is 3)
 
-random.walk.model <- function(samples, drift=0, sdrw=0.3, criterion=3){
-  
-  output <- data.frame(
-    correct = accuracy.array,
-    rt = rt.array
-  )
-  
-  return(output)
-}
+ev <- numeric()
+rt.array <- numeric()
+accuracy.array <- numeric()
+count=1
 
+random.walk.model <-
+  function(samples,
+           drift = 0,
+           sdrw = 0.3,
+           criterion = 3) {
+    for (i in 1: samples){
+      ev = cumsum(c(0, rnorm(1000, drift, sdrw)))
+      for (i in 1:1000) {
+        if (abs(ev[i]) >= criterion) {
+          break
+        }
+      }
+      rt.array[count] = i
+      if (sign(ev[i]) == 1) {
+        accuracy.array[count] = TRUE
+      } else{
+        accuracy.array[count] = FALSE
+      }
+      count = count + 1
+      }
+    output <- data.frame(correct = accuracy.array,
+                     rt = rt.array)
+    return(output)
+}
+  
 # test the model ####
 
 # if the model is working correctly, then the line below should generate a data frame with 
@@ -37,6 +57,6 @@ library(dplyr)
 
 correct.data <- initial.test %>% filter(correct==TRUE)
 incorrect.data <- initial.test %>% filter(correct==FALSE)
-
 hist(correct.data$rt)
 hist(incorrect.data$rt)
+

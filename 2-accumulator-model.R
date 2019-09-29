@@ -6,7 +6,7 @@
 # note that the function takes four arguments:
 # samples is the number of samples to draw from the model
 # rate.1 is the evidence accumulation rate for the correct response (default value is 40)
-# rate.1 is the evidence accumulation rate for the incorrect response (default value is 40)
+# rate.2 is the evidence accumulation rate for the incorrect response (default value is 40)
 # criterion is the threshold for a response (default value is 3)
 
 # one oddity: note that higher values for rate.1 and rate.2 will actually produce slower RTs.
@@ -15,13 +15,27 @@
 # these parameters more intuitive by taking 1/rate.1 and 1/rate.2 as the values to rexp().
 
 accumulator.model <- function(samples, rate.1=40, rate.2=40, criterion=3){
-  
-
+  for (i in 1:samples){
+    evi.acc.1=0
+    evi.acc.2=0
+    rt.count=0
+    while(evi.acc.1 < criterion || evi.acc.2 < criterion){
+      evi.acc.1 <- evi.acc.1+rexp (1, rate.1)
+      evi.acc.2 <-evi.acc.2+rexp (1, rate.2)
+      rt.count=rt.count+1
+    }
+    rt.array[count] = rt.count
+    if(evi.acc.1>evi.acc.2){
+      accuracy.array[count] = TRUE
+    }else{
+      accuracy.array[count]=FALSE
+    }
+    count = count + 1
+  }
   output <- data.frame(
-    correct = accuracy.array,
-    rt = rt.array
+    rt = rt.array,
+    correct = accuracy.array
   )
-  
   return(output)
 }
 
