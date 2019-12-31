@@ -50,6 +50,7 @@ random.walk.model <-
 
 initial.test <- random.walk.model(1000)
 sum(initial.test$correct) / length(initial.test$correct) # should be close to 0.8
+
 mean(initial.test$rt) # should be about 250
 
 # visualize the RT distributions ####
@@ -100,6 +101,12 @@ incorrect.data.ac <- initial.test %>% filter(correct == FALSE)
 # Can both models do a reasonable job of accounting for the mean RT and accuracy? Report the
 # results of your efforts:
 
+# For the random walk model, parameters of drift= 0.013 and criterion= 5 produce mean RTs 
+# of 249.506. The overall accuracy is 81.2%. 
+
+# For the accumulator model, parameters of rate.1 = 31 and rate.2 = 40 produce mean RTs
+# of 243.597, respectively. The overall accuracy is 81.1%.
+
 # Both models do a reasonal job of accounting for the mean RT and accuracy. They both approximate the numbers relatively
 # well. 
 
@@ -109,6 +116,7 @@ incorrect.data.ac <- initial.test %>% filter(correct == FALSE)
 # Describe briefly how you might make this evaluation.
 
 # Random walk
+layout(matrix(1:4, nrow=2, byrow=T))
 hist(correct.data.rw$rt)
 hist(incorrect.data.rw$rt)
 
